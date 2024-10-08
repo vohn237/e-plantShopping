@@ -8,50 +8,51 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
-    return cart
-      .reduce(
-        (total, item) =>
-          total + item.quantity * parseFloat(item.cost.replace('$', '')),
-        0
-      )
-      .toFixed(2);
+    // Calculate total amount for all products in the cart
+    let total = 0;
+    cart.forEach((item) => {
+      total += parseFloat(item.cost.replace('$', '')) * item.quantity;
+    });
+    return total;
   };
 
   // Handle continue shopping button click
   const handleContinueShopping = (e) => {
-    e.preventDefault();
+    // call the function passed from the parent component.
+    // e.preventDefault()
     onContinueShopping();
   };
 
-  // Handle increment button click
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
+
   const handleIncrement = (item) => {
+    // dispatch the updateQuantity action reducer
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
-  // Handle decrement button click
   const handleDecrement = (item) => {
-    if (item.quantity > 1) {
+    // if-else to handle the case if the number of items gets decremented to 0
+    if (item.quantity - 1 === 0) {
+      // dispatch the removeItem action reducer
+      dispatch(removeItem(item));
+    } else {
+      // dispatch the updateQuantity action reducer
       dispatch(
         updateQuantity({ name: item.name, quantity: item.quantity - 1 })
       );
-    } else {
-      dispatch(removeItem(item.name));
     }
   };
 
-  // Handle remove button click
   const handleRemove = (item) => {
-    dispatch(removeItem(item.name));
+    // dispatch the removeItem action reducer
+    dispatch(removeItem(item));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
-    return (item.quantity * parseFloat(item.cost.replace('$', ''))).toFixed(2);
-  };
-
-  // Handle checkout button click
-  const handleCheckoutShopping = (e) => {
-    alert('Functionality to be added for future reference');
+    return parseFloat(item.cost.replace('$', '')) * item.quantity;
   };
 
   return (

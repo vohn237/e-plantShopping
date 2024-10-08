@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
-import { addItem } from './CartSlice';
+import { addItem, selectorTotalItems } from './CartSlice.jsx';
+import { useSelector, useDispatch } from 'react-redux';
+
 function ProductList() {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+
+  const [addedToCart, setAddedToCart] = useState({}); // State to store the items added to the cart
+
+  const dispatch = useDispatch(); // Get the dispatch function from the useDispatch hook
+
+  // keep track of the total number of items in the cart
+  const totalItems = useSelector(selectorTotalItems);
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product)); // Dispatch the addItem action with the product as the payload
+    setAddedToCart((prevState) => ({
+      ...prevState,
+      [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+    }));
+  };
 
   const plantsArray = [
     {
@@ -269,30 +286,19 @@ function ProductList() {
     textDecoration: 'none',
   };
   const handleCartClick = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     setShowCart(true); // Set showCart to true when cart icon is clicked
   };
   const handlePlantsClick = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
     setShowCart(false); // Hide the cart when navigating to About Us
   };
 
   const handleContinueShopping = (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     setShowCart(false);
   };
-
-  const [addedToCart, setaddedToCart] = useState({});
-
-  const handleAddToCart = (product) => {
-    dispatchEvent(addItem(product));
-    setaddedToCart((prevState) => ({
-      ...prevState,
-      [product.name]: true,
-    }));
-  };
-
   return (
     <div>
       <div className="navbar" style={styleObj}>
@@ -341,31 +347,37 @@ function ProductList() {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                {totalItems > 0 && (
+                  <span className="cart_quantity_count">{totalItems}</span>
+                )}
               </h1>
             </a>
           </div>
         </div>
       </div>
+
       {!showCart ? (
         <div className="product-grid">
           {plantsArray.map((category, index) => (
             <div key={index}>
               <h1>
-                <div>{category.category}</div>
+                {' '}
+                <div> {category.category} </div>{' '}
               </h1>
-              <div className="product-list">
-                {category.plants.map((plant, plantIndex) => (
-                  <div className="product-card" key={plantIndex}>
+              <div className={'product-list'}>
+                {category.plants.map((plant, index) => (
+                  <div key={index} className="product-card">
                     <img
-                      className="product-image"
                       src={plant.image}
                       alt={plant.name}
+                      className="product-image"
                     />
-                    <div className="product-title">{plant.name}</div>
-                    <div className="product-price">{plant.cost}</div>
+                    <div className="product-title"> {plant.name} </div>
                     <div className="product-description">
-                      {plant.description}
+                      {' '}
+                      {plant.description}{' '}
                     </div>
+                    <div className="product-price"> {plant.cost} </div>
                     <button
                       className="product-button"
                       onClick={() => handleAddToCart(plant)}
