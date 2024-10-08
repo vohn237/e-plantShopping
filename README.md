@@ -1,4 +1,4 @@
-# coding-project-template# E-commerce Website 🌱
+# E-commerce Website 🌱
 
 Welcome to my e-commerce website, where green meets tranquility! This project is a small e-commerce platform built with React as part of my Full-Stack Development learning journey through IBM. The site is now live on GitHub Pages and features a curated selection of plants available for online purchase.
 
